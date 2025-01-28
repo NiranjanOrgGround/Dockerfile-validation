@@ -25,6 +25,25 @@ RUN sudo wget https://dl.google.com/go/go1.20.linux-amd64.tar.gz && \
     sudo tar -xzf go1.20.linux-amd64.tar.gz && \
     sudo chown -R runner:runner /home/runner/go
 
+# Install Node 14.15.4
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash \
+    && export NVM_DIR="$HOME/.nvm" \
+    && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" \
+    && nvm install v14.15.4 \
+    && npm install --global yarn \
+    && sudo ln -s $HOME/.nvm/versions/node/v14.15.4/bin/node /usr/local/bin/node \
+    && sudo ln -s $HOME/.nvm/versions/node/v14.15.4/bin/npm /usr/local/bin/npm \
+    && sudo ln -s $HOME/.nvm/versions/node/v14.15.4/bin/npx /usr/local/bin/npx \
+    && sudo ln -s $HOME/.nvm/versions/node/v14.15.4/bin/yarn /usr/local/bin/yarn \
+    && sudo chown -R runner:runner /usr/local/bin
+
+# Install maven 3.3.3
+RUN sudo wget https://archive.apache.org/dist/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz \
+    && sudo tar -xvzf apache-maven-3.3.3-bin.tar.gz \
+    && sudo mv apache-maven-3.3.3 /opt/maven \
+    && sudo rm -rf apache-maven-3.3.3-bin.tar.gz \
+    && sudo chown -R runner:runner /opt/maven
+
 # Set environment variables
 ENV HOME=/home/runner
 ENV GOROOT=/home/runner/go
