@@ -49,18 +49,23 @@ function validateBaseImage(lines) {
 }
 
 function extractVersion(content, patterns) {
+  console.log('Content being scanned for version:', content); // Debugging: Log the content
   for (const pattern of patterns) {
     const match = content.match(pattern);
     if (match && match[1]) {
+      console.log(`Pattern matched: ${pattern}, Detected Version: ${match[1]}`); // Debugging: Log match details
       return match[1];
     }
   }
+  console.log('No version detected for patterns:', patterns); // Debugging: Log if no match is found
   return null;
 }
 
 function validateTools(lines) {
   const runLines = lines.filter(line => line.trim().startsWith('RUN'));
+  console.log('RUN lines:', runLines); // Debugging: Log all RUN lines
   const content = runLines.join('\n');
+  console.log('Combined RUN content:', content); // Debugging: Log combined content for tool detection
   const tools = [
     {
       name: 'Java',
