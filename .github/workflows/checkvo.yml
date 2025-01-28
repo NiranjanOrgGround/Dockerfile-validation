@@ -1,0 +1,18 @@
+name: check vo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  checkvo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Run Checkov action
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          quiet: true # optional: display only failed checks
+          dockerfile_path: "${{github.workspace}}/cosmos/Dockerfile" # path to the Dockerfile
