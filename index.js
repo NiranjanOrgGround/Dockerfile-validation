@@ -97,8 +97,9 @@ function validateTools(lines) {
     {
       name: 'Node',
       patterns: [
-        /node(?:js)?[- ](\d+)/i,
-        /nodejs[- ](\d+)/i
+        /node(?:js)?[- ](\d+\.\d+\.\d+)/i, // Matches full version like 14.15.4
+        /node(?:js)?[- ](\d+\.\d+)/i,      // Matches major.minor version like 14.15
+        /node(?:js)?[- ](\d+)/i            // Matches major version like 14
       ],
       allowedVersions: standards.nodeVersions
     },
