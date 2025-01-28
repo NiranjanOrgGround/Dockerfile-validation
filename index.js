@@ -65,7 +65,8 @@ function validateTools(lines) {
       name: 'Java',
       patterns: [
         /(?:openjdk-|java-|jdk)(\d+)/i,
-        /java\s+(\d+)/i
+        /java\s+(\d+)/i,
+        /jdk-(\d+)/i
       ],
       allowedVersions: standards.jdkVersions
     },
