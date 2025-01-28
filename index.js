@@ -49,23 +49,24 @@ function validateBaseImage(lines) {
 }
 
 function extractVersion(content, patterns) {
-  // console.log('Content being scanned for version:', content); // Debugging: Log the content
   for (const pattern of patterns) {
     const match = content.match(pattern);
     if (match && match[1]) {
-      // console.log(`Pattern matched: ${pattern}, Detected Version: ${match[1]}`); // Debugging: Log match details
+      // For Node.js, extract just the major version for comparison
+      if (match[1].includes('.')) {
+        const majorVersion = match[1].split('.')[0];
+        return majorVersion;
+      }
       return match[1];
     }
   }
-  // console.log('No version detected for patterns:', patterns); // Debugging: Log if no match is found
   return null;
 }
 
 function validateTools(lines) {
   const runLines = lines.filter(line => line.trim().startsWith('RUN'));
-  // console.log('RUN lines:', runLines); // Debugging: Log all RUN lines
   const content = runLines.join('\n');
-  // console.log('Combined RUN content:', content); // Debugging: Log combined content for tool detection
+  
   const tools = [
     {
       name: 'Java',
@@ -102,10 +103,8 @@ function validateTools(lines) {
     {
       name: 'Node',
       patterns: [
-        /nvm install v?(\d+\.\d+\.\d+)/i, // Matches nvm install with full version, e.g., v14.15.4
-        /node(?:js)?[- ](\d+\.\d+\.\d+)/i, // Matches full version like 14.15.4
-        /node(?:js)?[- ](\d+\.\d+)/i,      // Matches major.minor version like 14.15
-        /node(?:js)?[- ](\d+)/i            // Matches major version like 14
+        /nvm install v?(\d+(?:\.\d+\.\d+)?)/i,
+        /node\/v(\d+(?:\.\d+\.\d+)?)/i
       ],
       allowedVersions: standards.nodeVersions
     },
@@ -125,17 +124,13 @@ function validateTools(lines) {
     let isAllowedVersion = false;
 
     if (found) {
-      // Check if the detected version matches any allowed version
-      isAllowedVersion = tool.allowedVersions.some(allowed => {
-        // Handle both exact matches and version prefixes
-        return detectedVersion === allowed || detectedVersion.startsWith(allowed + '.');
-      });
+      isAllowedVersion = tool.allowedVersions.includes(detectedVersion);
     }
 
     return {
       name: tool.name,
       found: found,
-      valid: !found || isAllowedVersion, // Valid if tool is not found or version is allowed
+      valid: !found || isAllowedVersion,
       version: detectedVersion,
       message: !found 
         ? `${tool.name} not found (optional)`
