@@ -52,7 +52,7 @@ function normalizeVersion(version) {
   // Extract first two parts of version (x.x) if it has more parts
   const parts = version.split('.');
   if (parts.length > 2) {
-    return `${parts[0]}.${parts[1]}`;
+    return parts[0];  // Return only major version
   }
   return version;
 }
@@ -70,8 +70,7 @@ function extractVersion(content, patterns) {
 }
 
 function validateTools(lines) {
-  const runLines = lines.filter(line => line.trim().startsWith('RUN'));
-  const content = runLines.join('\n');
+  const content = lines.join('\n');  // Use all lines instead of just RUN lines
   
   const tools = [
     {
@@ -109,10 +108,10 @@ function validateTools(lines) {
     {
       name: 'Node',
       patterns: [
-        /nvm install v?(\d+(?:\.\d+(?:\.\d+)?)?)/i,
+        /nvm install\s+v?(\d+(?:\.\d+(?:\.\d+)?)?)/i,
         /node\/v(\d+(?:\.\d+(?:\.\d+)?)?)/i,
-        /nvm install\s+v(\d+(?:\.\d+(?:\.\d+)?)?)/i,
-        /versions\/node\/v(\d+(?:\.\d+(?:\.\d+)?)?)/i
+        /versions\/node\/v(\d+(?:\.\d+(?:\.\d+)?)?)/i,
+        /v(\d+\.\d+\.\d+)\/bin\/node/i
       ],
       allowedVersions: standards.nodeVersions
     },
@@ -133,10 +132,8 @@ function validateTools(lines) {
 
     if (found) {
       // Check if the detected version matches any allowed version
-      // For single number versions (e.g., "14"), also match against "14.x"
       isAllowedVersion = tool.allowedVersions.some(allowed => {
-        const detectedMajor = detectedVersion.split('.')[0];
-        return allowed === detectedVersion || allowed === detectedMajor;
+        return allowed === detectedVersion;
       });
     }
 
