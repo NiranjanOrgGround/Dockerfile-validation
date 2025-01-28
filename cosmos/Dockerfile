@@ -47,5 +47,5 @@ RUN sudo wget https://archive.apache.org/dist/maven/maven-3/3.3.3/binaries/apach
 ENV HOME=/home/runner
 ENV GOROOT=/home/runner/go
 ENV GOPATH=$HOME/go
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64/jre
 ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH:$JAVA_HOME/bin
