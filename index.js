@@ -110,7 +110,9 @@ function validateTools(lines) {
       name: 'Node',
       patterns: [
         /nvm install v?(\d+(?:\.\d+(?:\.\d+)?)?)/i,
-        /node\/v(\d+(?:\.\d+(?:\.\d+)?)?)/i
+        /node\/v(\d+(?:\.\d+(?:\.\d+)?)?)/i,
+        /nvm install\s+v(\d+(?:\.\d+(?:\.\d+)?)?)/i,
+        /versions\/node\/v(\d+(?:\.\d+(?:\.\d+)?)?)/i
       ],
       allowedVersions: standards.nodeVersions
     },
@@ -133,11 +135,8 @@ function validateTools(lines) {
       // Check if the detected version matches any allowed version
       // For single number versions (e.g., "14"), also match against "14.x"
       isAllowedVersion = tool.allowedVersions.some(allowed => {
-        if (detectedVersion.includes('.')) {
-          return detectedVersion === allowed;
-        } else {
-          return allowed === detectedVersion || allowed.startsWith(detectedVersion + '.');
-        }
+        const detectedMajor = detectedVersion.split('.')[0];
+        return allowed === detectedVersion || allowed === detectedMajor;
       });
     }
 
