@@ -1,0 +1,9 @@
+{
+  "baseImage": "artifactory-ci.myntra.com/dockerhub/service-build-env/myntra-runner:latest",
+  "jdkVersions": ["8", "11", "17", "21"],
+  "gradleVersions": ["1.3", "1.7", "1.10", "2.9", "3.1"],
+  "goVersions": ["1.13", "1.18", "1.17"],
+  "mavenVersions": ["3.3", "3.6", "3.8"],
+  "nodeVersions": ["6", "8", "10", "12", "14", "16"],
+  "pythonVersions": ["2.7", "3.6", "3.8", "3.9"]
+}
