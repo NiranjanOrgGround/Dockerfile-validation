@@ -1,0 +1,5 @@
+name: 'Dockerfile Validator'
+description: 'Validates Dockerfile for required tools and versions'
+runs:
+  using: 'node20'
+  main: 'index.js'
