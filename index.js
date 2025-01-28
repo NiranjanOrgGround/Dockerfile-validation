@@ -49,7 +49,6 @@ function validateBaseImage(lines) {
 }
 
 function normalizeVersion(version) {
-  // Extract first two parts of version (x.x) if it has more parts
   const parts = version.split('.');
   if (parts.length > 2) {
     return parts[0];  // Return only major version
@@ -61,7 +60,6 @@ function extractVersion(content, patterns) {
   for (const pattern of patterns) {
     const match = content.match(pattern);
     if (match && match[1]) {
-      // Extract and normalize the version
       const version = match[1];
       return normalizeVersion(version);
     }
@@ -69,8 +67,43 @@ function extractVersion(content, patterns) {
   return null;
 }
 
+function extractRunInstructions(lines) {
+  let runInstructions = [];
+  let currentInstruction = '';
+  
+  for (let line of lines) {
+    line = line.trim();
+    
+    // Start of a new RUN instruction
+    if (line.startsWith('RUN')) {
+      if (currentInstruction) {
+        runInstructions.push(currentInstruction);
+      }
+      currentInstruction = line.substring(3).trim();
+    }
+    // Continuation of current instruction
+    else if (currentInstruction && line.endsWith('\\')) {
+      currentInstruction += ' ' + line.slice(0, -1).trim();
+    }
+    // End of current instruction
+    else if (currentInstruction) {
+      currentInstruction += ' ' + line;
+      runInstructions.push(currentInstruction);
+      currentInstruction = '';
+    }
+  }
+  
+  // Add last instruction if exists
+  if (currentInstruction) {
+    runInstructions.push(currentInstruction);
+  }
+  
+  return runInstructions;
+}
+
 function validateTools(lines) {
-  const content = lines.join('\n');  // Use all lines instead of just RUN lines
+  const runInstructions = extractRunInstructions(lines);
+  const content = runInstructions.join('\n');
   
   const tools = [
     {
@@ -110,8 +143,7 @@ function validateTools(lines) {
       patterns: [
         /nvm install\s+v?(\d+(?:\.\d+(?:\.\d+)?)?)/i,
         /node\/v(\d+(?:\.\d+(?:\.\d+)?)?)/i,
-        /versions\/node\/v(\d+(?:\.\d+(?:\.\d+)?)?)/i,
-        /v(\d+\.\d+\.\d+)\/bin\/node/i
+        /versions\/node\/v(\d+(?:\.\d+(?:\.\d+)?)?)/i
       ],
       allowedVersions: standards.nodeVersions
     },
@@ -131,7 +163,6 @@ function validateTools(lines) {
     let isAllowedVersion = false;
 
     if (found) {
-      // Check if the detected version matches any allowed version
       isAllowedVersion = tool.allowedVersions.some(allowed => {
         return allowed === detectedVersion;
       });
