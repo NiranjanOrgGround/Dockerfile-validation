@@ -1,0 +1,17 @@
+name: Dockerfile validation
+
+on:
+  workflow_dispatch:
+
+jobs:
+  validation:
+    runs-on: ubutnu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dockerfile validation
+        uses: NiranjanOrgGround/Dockerfile-validation@main
+
+      - name: Build the Docker image
+        run: echo "Building the Docker Image..."
