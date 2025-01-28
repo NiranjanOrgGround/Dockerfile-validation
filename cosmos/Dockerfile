@@ -9,10 +9,6 @@ RUN sudo apt update -y \
     && sudo apt install -y --no-install-recommends sudo lsb-release gpg-agent software-properties-common curl jq unzip wget rsync rpm gcc build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev \
     && sudo rm -rf /var/lib/apt/lists/*
 
-# # Install Java 8
-# RUN sudo apt update -y \
-#     && sudo apt install -y openjdk-8-jdk
-
 # Install Java 21
 RUN wget https://download.oracle.com/java/23/latest/jdk-21_linux-aarch64_bin.tar.gz
 
