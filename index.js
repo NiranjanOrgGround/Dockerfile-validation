@@ -48,16 +48,22 @@ function validateBaseImage(lines) {
   };
 }
 
+function normalizeVersion(version) {
+  // Extract first two parts of version (x.x) if it has more parts
+  const parts = version.split('.');
+  if (parts.length > 2) {
+    return `${parts[0]}.${parts[1]}`;
+  }
+  return version;
+}
+
 function extractVersion(content, patterns) {
   for (const pattern of patterns) {
     const match = content.match(pattern);
     if (match && match[1]) {
-      // For Node.js, extract just the major version for comparison
-      if (match[1].includes('.')) {
-        const majorVersion = match[1].split('.')[0];
-        return majorVersion;
-      }
-      return match[1];
+      // Extract and normalize the version
+      const version = match[1];
+      return normalizeVersion(version);
     }
   }
   return null;
@@ -71,9 +77,9 @@ function validateTools(lines) {
     {
       name: 'Java',
       patterns: [
-        /(?:openjdk-|java-|jdk)(\d+)/i,
-        /java\s+(\d+)/i,
-        /jdk-(\d+)/i
+        /(?:openjdk-|java-|jdk)(\d+(?:\.\d+)?)/i,
+        /java\s+(\d+(?:\.\d+)?)/i,
+        /jdk-(\d+(?:\.\d+)?)/i
       ],
       allowedVersions: standards.jdkVersions
     },
@@ -103,8 +109,8 @@ function validateTools(lines) {
     {
       name: 'Node',
       patterns: [
-        /nvm install v?(\d+(?:\.\d+\.\d+)?)/i,
-        /node\/v(\d+(?:\.\d+\.\d+)?)/i
+        /nvm install v?(\d+(?:\.\d+(?:\.\d+)?)?)/i,
+        /node\/v(\d+(?:\.\d+(?:\.\d+)?)?)/i
       ],
       allowedVersions: standards.nodeVersions
     },
@@ -124,7 +130,15 @@ function validateTools(lines) {
     let isAllowedVersion = false;
 
     if (found) {
-      isAllowedVersion = tool.allowedVersions.includes(detectedVersion);
+      // Check if the detected version matches any allowed version
+      // For single number versions (e.g., "14"), also match against "14.x"
+      isAllowedVersion = tool.allowedVersions.some(allowed => {
+        if (detectedVersion.includes('.')) {
+          return detectedVersion === allowed;
+        } else {
+          return allowed === detectedVersion || allowed.startsWith(detectedVersion + '.');
+        }
+      });
     }
 
     return {
