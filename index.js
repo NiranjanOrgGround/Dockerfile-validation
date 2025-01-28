@@ -16,8 +16,9 @@ function validateDockerfile(dockerfilePath) {
     
     logResults(results);
     
-    // Exit with error if any validation failed
-    if (!results.baseImage.valid || results.tools.some(tool => !tool.valid)) {
+    // Exit with error if base image is invalid or if any found tool has invalid version
+    const foundToolsWithInvalidVersions = results.tools.filter(tool => tool.found && !tool.valid);
+    if (!results.baseImage.valid || foundToolsWithInvalidVersions.length > 0) {
       process.exit(1);
     }
   } catch (error) {
@@ -124,13 +125,14 @@ function validateTools(lines) {
 
     return {
       name: tool.name,
-      valid: found && isAllowedVersion,
+      found: found,
+      valid: !found || isAllowedVersion, // Valid if tool is not found or version is allowed
       version: detectedVersion,
       message: !found 
-        ? `${tool.name} not found`
+        ? `${tool.name} not found (optional)`
         : !isAllowedVersion
         ? `${tool.name} version ${detectedVersion} is not allowed. Allowed versions: ${tool.allowedVersions.join(', ')}`
-        : `${tool.name} found (version ${detectedVersion})`
+        : `${tool.name} found with valid version ${detectedVersion}`
     };
   });
 }
@@ -145,16 +147,22 @@ function logResults(results) {
   
   // Log tools results
   console.log('Tools:');
-  results.tools.forEach(tool => {
-    console.log(`  ${tool.name}:`);
-    console.log(`    Status: ${tool.valid ? '✅ Found' : '❌ Not Found'}`);
-    console.log(`    Details: ${tool.message}`);
-  });
+  const foundTools = results.tools.filter(tool => tool.found);
+  
+  if (foundTools.length === 0) {
+    console.log('  No tools detected in Dockerfile');
+  } else {
+    foundTools.forEach(tool => {
+      console.log(`  ${tool.name}:`);
+      console.log(`    Status: ${tool.valid ? '✅ Valid' : '❌ Invalid'}`);
+      console.log(`    Details: ${tool.message}`);
+    });
+  }
   
   // Summary
-  const totalTools = results.tools.length;
-  const validTools = results.tools.filter(t => t.valid).length;
-  console.log(`\nSummary: ${validTools}/${totalTools} required tools found`);
+  const foundToolsCount = foundTools.length;
+  const validToolsCount = foundTools.filter(t => t.valid).length;
+  console.log(`\nSummary: ${validToolsCount}/${foundToolsCount} detected tools have valid versions`);
 }
 
 // Main execution
