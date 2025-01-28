@@ -1,4 +1,4 @@
-FROM artifactory-ci.myntra.com/dockerhub/service-build-env/myntra-runner:latest
+FROM artifactory-ci.myntra.com/dockerhub/service-build-env/myntra-runner:v1
 
 # Add labes to the image
 LABEL org.opencontainers.image.title="Golang-1.20-Gradle-2.9"
