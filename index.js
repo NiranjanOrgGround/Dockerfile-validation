@@ -59,7 +59,8 @@ function extractVersion(content, patterns) {
 }
 
 function validateTools(lines) {
-  const content = lines.join('\n');
+  const runLines = lines.filter(line => line.trim().startsWith('RUN'));
+  const content = runLines.join('\n');
   const tools = [
     {
       name: 'Java',
