@@ -102,10 +102,9 @@ function validateTools(lines) {
     {
       name: 'Node',
       patterns: [
-        /nvm install v?(\d+)/i,
-        // /nvm install v?(\d+\.\d+\.\d+)/i, // Matches nvm install with full version, e.g., v14.15.4
-        // /node(?:js)?[- ](\d+\.\d+\.\d+)/i, // Matches full version like 14.15.4
-        // /node(?:js)?[- ](\d+\.\d+)/i,      // Matches major.minor version like 14.15
+        /nvm install v?(\d+\.\d+\.\d+)/i, // Matches nvm install with full version, e.g., v14.15.4
+        /node(?:js)?[- ](\d+\.\d+\.\d+)/i, // Matches full version like 14.15.4
+        /node(?:js)?[- ](\d+\.\d+)/i,      // Matches major.minor version like 14.15
         /node(?:js)?[- ](\d+)/i            // Matches major version like 14
       ],
       allowedVersions: standards.nodeVersions
