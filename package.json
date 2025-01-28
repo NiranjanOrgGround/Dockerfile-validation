@@ -1,0 +1,17 @@
+{
+  "name": "dockerfile-validator-action",
+  "version": "1.0.0",
+  "description": "GitHub Action to validate Dockerfile tool installations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "github",
+    "action",
+    "dockerfile",
+    "validation"
+  ],
+  "author": "",
+  "license": "MIT"
+}
