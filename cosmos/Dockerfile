@@ -43,14 +43,13 @@ RUN sudo wget https://archive.apache.org/dist/maven/maven-3/3.3.3/binaries/apach
     && sudo rm -rf apache-maven-3.3.3-bin.tar.gz \
     && sudo chown -R runner:runner /opt/maven
 
-#Installing Python 2.7
-RUN sudo apt update -y \
-    && sudo apt install -y sudo wget gcc python2-minimal \
-    && sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1 \
-    && sudo wget https://bootstrap.pypa.io/pip/2.7/get-pip.py --no-check-certificate \
-    && python2 get-pip.py --trusted-host pypi.org --trusted-host files.pythonhosted.org \
-    && echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc \
-    && . ~/.bashrc
+#Installing Python 3.9
+RUN cd /opt \
+    && sudo wget --no-check-certificate https://www.python.org/ftp/python/3.9.0/Python-3.9.0.tar.xz \
+    && sudo tar xf Python-3.9.0.tar.xz \
+    && cd Python-3.9.0 \
+    && sudo ./configure --prefix=/usr/local \
+    && sudo make && sudo make altinstall
 
 # Set environment variables
 ENV HOME=/home/runner
