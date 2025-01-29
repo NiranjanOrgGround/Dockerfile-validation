@@ -1,18 +1,29 @@
-name: check vo
+name: Checkov Dockerfile Scan
 
 on:
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
+  #   branches:
+  #     - main
   workflow_dispatch:
 
 jobs:
-  checkvo:
+  checkov-scan:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      # Checkout the repository
+      - name: Checkout code
         uses: actions/checkout@v4
-        
-      - name: Run Checkov action
-        id: checkov
+
+      # Run Checkov with the custom policy
+      - name: Run Checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          quiet: true # optional: display only failed checks
-          dockerfile_path: "${{github.workspace}}/cosmos/Dockerfile" # path to the Dockerfile
+          directory: .
+          external_checks_dir: .github/checkov/custom_policies
+          quiet: false
+          soft_fail: false
+          framework: dockerfile
