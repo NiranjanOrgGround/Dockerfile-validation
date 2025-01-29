@@ -12,6 +12,9 @@ jobs:
 
       - name: Dockerfile validation
         uses: NiranjanOrgGround/Dockerfile-validation@main
+        env:
+          STANDARDS_PATH: managed_files/standards.json
+          DOCKERFILE_PATH: cosmos/Dockerfile
 
       - name: Build the Docker image
         run: echo "Building the Docker Image..."
