@@ -22,7 +22,7 @@ jobs:
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: .
+          directory: ./cosmos 
           external_checks_dir: .github/checkov/custom_policies
           quiet: false
           soft_fail: false
