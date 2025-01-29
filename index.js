@@ -155,7 +155,9 @@ function validateTools(lines) {
         /\/python(\d+(?:\.\d+)?)/i,
         /\bpython(\d+(?:\.\d+)?)\b/i,
         /easy_install-(\d+(?:\.\d+)?)/i,
-        /python(\d+\.\d+)\b/i
+        /python(\d+\.\d+)\b/i,
+        /python(\d+)(?!\.\d)/i,
+        /zlib1g-dev\s+libncurses5-dev.*python/i
       ],
       allowedVersions: standards.pythonVersions
     }
