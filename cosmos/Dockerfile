@@ -43,6 +43,9 @@ RUN sudo wget https://archive.apache.org/dist/maven/maven-3/3.3.3/binaries/apach
     && sudo rm -rf apache-maven-3.3.3-bin.tar.gz \
     && sudo chown -R runner:runner /opt/maven
 
+# Install Python 2.7
+RUN sudo apt install python3
+
 # Set environment variables
 ENV HOME=/home/runner
 ENV GOROOT=/home/runner/go
