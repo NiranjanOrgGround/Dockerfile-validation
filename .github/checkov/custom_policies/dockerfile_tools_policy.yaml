@@ -1,84 +1,59 @@
 metadata:
-  id: "CUSTOM_DOCKERFILE_7"
-  name: "Ensure Dockerfile meets tool and version requirements"
-  category: "SECURITY"
-  severity: "HIGH"
+  name: "Ensure Dockerfile uses the specified base image and installs allowed Java, Maven, Go, Gradle, and Python versions"
+  id: "CKV_DOCKER_1"
+  category: "BEST_PRACTICES"
+  scope:
+    provider: dockerfile
+
 definition:
-  cond_type: "and"
-  conditions:
-    # 1. Base image must be ubuntu:latest
-    - cond_type: "attribute"
-      resource_types: ["dockerfile"]
-      attribute: "FROM.image"
-      operator: "equals"
-      value: "artifactory-ci.myntra.com/dockerhub/service-build-env/myntra-runner:latest"
+  - cond_type: "attribute"
+    resource_types:
+      - "Dockerfile"
+    attribute: "FROM"
+    operator: "equals"
+    value: "artifactory-ci.myntra.com/dockerhub/service-build-env/myntra-runner:latest"
 
-    # 2. Java version check (if Java is installed)
-    - cond_type: "or"
-      conditions:
-        - cond_type: "attribute"
-          resource_types: ["dockerfile"]
-          attribute: "RUN.apt_install"
-          operator: "regex"
-          value: "(openjdk-(8|11|17|21)-jdk|openjdk-(8|11|17|21)-jre)"
-        - cond_type: "attribute"
-          resource_types: ["dockerfile"]
-          attribute: "RUN.curl_or_wget"
-          operator: "regex"
-          value: "(jdk-8|jdk-11|jdk-17|jdk-21)"
+  - cond_type: "or"
+    conditions:
+      - cond_type: "attribute"
+        resource_types:
+          - "Dockerfile"
+        attribute: "RUN"
+        operator: "regex"
+        value: "(apt-get install -y openjdk-(8|11|17|21)-jdk|wget .*java.*(8|11|17|21).*|curl .*java.*(8|11|17|21).*)"
 
-    # 3. Maven version check (if Maven is installed)
-    - cond_type: "or"
-      conditions:
-        - cond_type: "attribute"
-          resource_types: ["dockerfile"]
-          attribute: "RUN.apt_install"
-          operator: "regex"
-          value: "(maven-(3.3|3.6|3.8))"
-        - cond_type: "attribute"
-          resource_types: ["dockerfile"]
-          attribute: "RUN.curl_or_wget"
-          operator: "regex"
-          value: "(maven-3.3|maven-3.6|maven-3.8)"
+  - cond_type: "or"
+    conditions:
+      - cond_type: "attribute"
+        resource_types:
+          - "Dockerfile"
+        attribute: "RUN"
+        operator: "regex"
+        value: "(apt-get install -y maven=3\.(3|6|8).\*|wget .*maven.*3\.(3|6|8).*|curl .*maven.*3\.(3|6|8).*)"
 
-    # 4. Go version check (if Go is installed)
-    - cond_type: "or"
-      conditions:
-        - cond_type: "attribute"
-          resource_types: ["dockerfile"]
-          attribute: "RUN.apt_install"
-          operator: "regex"
-          value: "(golang-(1.13|1.17|1.18|1.20))"
-        - cond_type: "attribute"
-          resource_types: ["dockerfile"]
-          attribute: "RUN.curl_or_wget"
-          operator: "regex"
-          value: "(go1.13|go1.17|go1.18|go1.20)"
+  - cond_type: "or"
+    conditions:
+      - cond_type: "attribute"
+        resource_types:
+          - "Dockerfile"
+        attribute: "RUN"
+        operator: "regex"
+        value: "(apt-get install -y golang-1\.(13|17|18|20)|wget .*go.*1\.(13|17|18|20).*|curl .*go.*1\.(13|17|18|20).*)"
 
-    # 5. Gradle version check (if Gradle is installed)
-    - cond_type: "or"
-      conditions:
-        - cond_type: "attribute"
-          resource_types: ["dockerfile"]
-          attribute: "RUN.apt_install"
-          operator: "regex"
-          value: "(gradle-(1.3|1.7|1.10|2.9|3.1))"
-        - cond_type: "attribute"
-          resource_types: ["dockerfile"]
-          attribute: "RUN.curl_or_wget"
-          operator: "regex"
-          value: "(gradle-1.3|gradle-1.7|gradle-1.10|gradle-2.9|gradle-3.1)"
+  - cond_type: "or"
+    conditions:
+      - cond_type: "attribute"
+        resource_types:
+          - "Dockerfile"
+        attribute: "RUN"
+        operator: "regex"
+        value: "(apt-get install -y gradle=1\.(3|7|10)|apt-get install -y gradle=2\.9|apt-get install -y gradle=3\.1|wget .*gradle.*(1\.3|1\.7|1\.10|2\.9|3\.1).*|curl .*gradle.*(1\.3|1\.7|1\.10|2\.9|3\.1).*)"
 
-    # 6. Python version check (if Python is installed)
-    - cond_type: "or"
-      conditions:
-        - cond_type: "attribute"
-          resource_types: ["dockerfile"]
-          attribute: "RUN.apt_install"
-          operator: "regex"
-          value: "(python(2.7|3.6|3.8|3.9))"
-        - cond_type: "attribute"
-          resource_types: ["dockerfile"]
-          attribute: "RUN.curl_or_wget"
-          operator: "regex"
-          value: "(Python-2.7|Python-3.6|Python-3.8|Python-3.9)"
+  - cond_type: "or"
+    conditions:
+      - cond_type: "attribute"
+        resource_types:
+          - "Dockerfile"
+        attribute: "RUN"
+        operator: "regex"
+        value: "(apt-get install -y python(2.7|3.6|3.8|3.9)|wget .*python.*(2.7|3.6|3.8|3.9).*|curl .*python.*(2.7|3.6|3.8|3.9).*)"
