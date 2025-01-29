@@ -43,14 +43,13 @@ RUN sudo wget https://archive.apache.org/dist/maven/maven-3/3.3.3/binaries/apach
     && sudo rm -rf apache-maven-3.3.3-bin.tar.gz \
     && sudo chown -R runner:runner /opt/maven
 
-RUN sudo apt install -y python3
 #Installing Python 3.9
-# RUN cd /opt \
-#     && sudo wget --no-check-certificate https://www.python.org/ftp/python/3.9.0/Python-3.9.0.tar.xz \
-#     && sudo tar xf Python-3.9.0.tar.xz \
-#     && cd Python-3.9.0 \
-#     && sudo ./configure --prefix=/usr/local \
-#     && sudo make && sudo make altinstall
+RUN cd /opt \
+    && sudo wget --no-check-certificate https://www.python.org/ftp/python/3.9.0/Python-3.9.0.tar.xz \
+    && sudo tar xf Python-3.9.0.tar.xz \
+    && cd Python-3.9.0 \
+    && sudo ./configure --prefix=/usr/local \
+    && sudo make && sudo make altinstall
 
 # Set environment variables
 ENV HOME=/home/runner
