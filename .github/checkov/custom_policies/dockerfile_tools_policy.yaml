@@ -11,7 +11,7 @@ definition:
       resource_types: ["dockerfile"]
       attribute: "FROM.image"
       operator: "equals"
-      value: "ubuntu:latest"
+      value: "artifactory-ci.myntra.com/dockerhub/service-build-env/myntra-runner:latest"
 
     # 2. Java version check (if Java is installed)
     - cond_type: "or"
