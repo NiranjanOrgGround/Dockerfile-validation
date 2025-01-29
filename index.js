@@ -151,7 +151,11 @@ function validateTools(lines) {
       name: 'Python',
       patterns: [
         /python(\d+(?:\.\d+)?)/i,
-        /python[- ](\d+(?:\.\d+)?)/i
+        /python[- ](\d+(?:\.\d+)?)/i,
+        /\/python(\d+(?:\.\d+)?)/i,
+        /\bpython(\d+(?:\.\d+)?)\b/i,
+        /easy_install-(\d+(?:\.\d+)?)/i,
+        /python(\d+\.\d+)\b/i
       ],
       allowedVersions: standards.pythonVersions
     }
