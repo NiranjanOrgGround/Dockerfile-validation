@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 // Load company standards
-const standards = JSON.parse(fs.readFileSync('./managed_files/standards.json', 'utf8'));
+const standardsPath = process.env.STANDARDS_PATH;
+const standards = JSON.parse(fs.readFileSync(standardsPath, 'utf8'));
 
 function validateDockerfile(dockerfilePath) {
   try {
@@ -217,5 +218,5 @@ function logResults(results) {
 }
 
 // Main execution
-const dockerfilePath = process.env.DOCKERFILE_PATH || './cosmos/Dockerfile';
+const dockerfilePath = process.env.DOCKERFILE_PATH;
 validateDockerfile(dockerfilePath);
